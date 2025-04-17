@@ -1,63 +1,81 @@
-### 📄 `README.md`
+### 📄 `aak-ai-copilot/README.md`
 
 ```markdown
 # 🤖 AAK AI Copilot
 
-An intelligent session monitor that runs in the background during tracked work sessions. Designed for AAK Telescience to provide real-time nudges, idle detection, and AI-powered feedback using Claude or GPT.
+The **AAK AI Copilot** is a real-time productivity assistant designed for tracked sessions at AAK Telescience. It silently monitors keyboard and mouse activity, tracks session behavior, and uses Claude (or OpenAI GPT) to:
 
-## 🧠 Features
+- Detect idle periods and prompt users
+- Score how well a user is sticking to their assigned task
+- Log all interactions for auditing, review, or reporting
 
-- Background session monitoring
-- Idle/inactivity detection
-- Window mismatch alerts
-- Claude/GPT-powered prompts for guidance
-- User response logging for audit trails
+---
 
-## 📦 Stack
+## 📦 Features
 
-- Python
-- OpenAI / Claude API
-- Optional websocket/CLI integration
+### 🧠 Intelligent Session Monitoring
+- Keystroke and mouse tracking via `pynput`
+- Idle time detection (triggered after 20+ seconds by default)
+
+### 💬 Claude-Powered Guidance
+- Sends session data to Claude to get alignment feedback
+- Evaluates whether user behavior matches their assigned task
+
+### 🧾 Logging + Integration
+- Real-time logs written to `copilot_log.jsonl`
+- Broadcasts live session signals to `live_metrics.json`
+- Easily consumed by `aak-ui-overlay` HUD
+
+---
 
 ## 🚀 Usage
 
-Start the monitor:
+### 1. Clone and install dependencies
+
+```bash
+git clone https://github.com/YOURORG/aak-ai-copilot.git
+cd aak-ai-copilot
+pip install -r requirements.txt
+```
+
+### 2. Add your OpenAI API key
+
+Create a `.env` file or export it in terminal:
+
+```bash
+export OPENAI_API_KEY=your-key-here
+```
+
+### 3. Run the copilot monitor
 
 ```bash
 python monitor.py
 ```
 
-Monitor runs in the background and triggers prompts based on session behavior.
-
-## 🛠️ To-Do
-
-- [ ] Idle detection engine
-- [ ] Claude intervention prompt
-- [ ] CLI/chat-style response logging
-- [ ] Task alignment detection
-```
+You’ll see terminal updates with:
+- Claude prompts
+- Idle detection
+- Task alignment scores
 
 ---
 
-### 🧠 `monitor.py`
+## 🧪 File Outputs
 
-```python
-# monitor.py
+| File | Description |
+|------|-------------|
+| `live_metrics.json` | JSON file with live metrics (used by HUD) |
+| `copilot_log.jsonl` | Line-by-line session logs with Claude responses |
 
-import time
+---
 
-def run_monitor():
-    print("🚀 AI Copilot running... (simulate idle monitor)")
-    last_activity = time.time()
+## 🛠 Planned Features
 
-    while True:
-        time.sleep(5)
-        elapsed = time.time() - last_activity
-        if elapsed > 1200:  # 20 minutes
-            print("⚠️ User idle for 20+ minutes. Triggering prompt...")
-            # TODO: Call Claude or display alert
-            last_activity = time.time()  # Reset
+- Websocket broadcast for real-time dashboards
+- GUI input or Streamlit-based user replies
+- Smart tag generation from session behavior
+- Grant/project linking based on activity
 
-if __name__ == "__main__":
-    run_monitor()
+---
 
+Built by the AI team at **AAK Telescience**  
+> Bridging researchers, investors, and the future of human-computer interaction.

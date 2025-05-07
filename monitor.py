@@ -3,11 +3,38 @@ import os
 import json
 from datetime import datetime
 import openai
+import requests
 from pynput import keyboard, mouse
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 LOG_FILE = "copilot_log.jsonl"
 SIGNAL_FILE = "live_metrics.json"
+API_URL = "http://localhost:8000/score_session"  # or your deployed endpoint
+
+def write_live_metrics():
+    metrics = {
+        "timestamp": datetime.utcnow().isoformat(),
+        "keystrokes": keystroke_count,
+        "mouse_movement" mouse_movement,
+        "idle_seconds": int(time.time() - last_activity),
+        "task_alignment_score": last_match_score,
+        "task_name": current_task
+    }
+
+    # Save locally
+    with open(SIGNAL_FILE, "w") as f:
+        json.dump(metrics, f)
+
+    # ALSO send to FastAPI
+    try:
+        res = requests.post(API_URL, json=metrics)
+        if res.status_code == 200:
+            print(f"✅ Metrics POSTed to API: {res.json()}")
+        else:
+            print(f"❌ Failed POST: {res.status_code} - {res.text}")
+    except Exception as e:
+        print(f"⚠️ Error posting metrics: {e}")
+
 
 last_activity = time.time()
 keystroke_count = 0
